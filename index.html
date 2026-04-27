@@ -1208,6 +1208,54 @@
           "playlist";
       }
     }
+
+    /* 用户区域 */
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .user-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    #user-name-label {
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    /* 登录弹窗 tabs */
+    .login-tabs {
+      display: inline-flex;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 2px;
+      background: rgba(0,0,0,0.35);
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+    .login-tab {
+      padding: 3px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--text-sub);
+      border: none;
+      background: transparent;
+      font-size: 11px;
+    }
+    .login-tab.active {
+      background: radial-gradient(circle at 30% 0, rgba(255,255,255,0.15), rgba(104,174,255,0.9));
+      color: #02040a;
+      font-weight: 600;
+      box-shadow: 0 0 8px rgba(104,174,255,0.7);
+    }
   </style>
 </head>
 <body>
@@ -1232,6 +1280,13 @@
         </div>
         <div class="shortcut-hint" data-i18n="shortcutHint">
           快捷键：Space 播放/暂停 · ←/→ 跳转 · ↑/↓ 音量 · N/P 切歌 · F 收藏 · L 切换歌词效果
+        </div>
+        <div class="user-area">
+          <button id="login-btn" class="btn btn-ghost ripple-target" data-i18n="userLoginBtn">👤 登录</button>
+          <div id="user-display" class="user-display" style="display:none;">
+            <span id="user-name-label"></span>
+            <button id="logout-btn" class="btn btn-ghost btn-icon ripple-target" title="退出登录">⏏</button>
+          </div>
         </div>
         <button id="shortcut-toggle-btn" class="shortcut-toggle-btn ripple-target" title="快捷键说明">⌨️</button>
       </div>
@@ -1485,6 +1540,30 @@
     </div>
   </div>
 
+  <!-- 登录 / 注册弹窗 -->
+  <div id="login-modal" class="modal-backdrop">
+    <div class="modal ripple-target">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-title-icon">👤</div>
+          <span id="login-modal-title">账号登录</span>
+        </div>
+        <button id="login-close" class="modal-close-btn">×</button>
+      </div>
+      <div class="login-tabs">
+        <button class="login-tab active" data-login-tab="login" data-i18n="tabLoginLabel">登录</button>
+        <button class="login-tab" data-login-tab="register" data-i18n="tabRegisterLabel">注册</button>
+      </div>
+      <p id="login-modal-desc" class="modal-desc"></p>
+      <input id="login-username" type="text" maxlength="20" autocomplete="username" />
+      <input id="login-password" type="password" maxlength="40" autocomplete="current-password" />
+      <div class="modal-actions">
+        <button id="login-cancel-btn" class="btn btn-ghost ripple-target" data-i18n="modalCancel">取消</button>
+        <button id="login-confirm-btn" class="btn btn-secondary ripple-target">登录</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast"></div>
 
   <script>
@@ -1556,7 +1635,25 @@
         modalNewPlaylistTitle:"新建歌单",
         modalNewPlaylistDesc:"给你的歌单取一个可爱的名字吧～",
         modalConfirm:"确定",
-        modalCancel:"取消"
+        modalCancel:"取消",
+        userLoginBtn:"👤 登录",
+        tabLoginLabel:"登录",
+        tabRegisterLabel:"注册",
+        modalLoginTitle:"账号登录",
+        modalLoginDesc:"登录后，收藏和自建歌单将自动保存。",
+        modalLoginConfirm:"登录",
+        modalRegisterTitle:"账号注册",
+        modalRegisterDesc:"注册后即可保存你的收藏和自建歌单。",
+        modalRegisterConfirm:"注册",
+        modalUsernamePlaceholder:"用户名（2～20个字符）",
+        modalPasswordPlaceholder:"密码（4～40个字符）",
+        toastLoginSuccess:"登录成功，欢迎回来！",
+        toastRegisterSuccess:"注册成功，已自动登录！",
+        toastLoginError:"用户名或密码错误。",
+        toastRegisterError:"用户名已存在，请换一个。",
+        toastLogout:"已退出登录。",
+        toastUsernameTooShort:"用户名至少需要 2 个字符。",
+        toastPasswordTooShort:"密码至少需要 4 个字符。"
       },
       en: {
         appTitle:"Pikachu Music Station",
@@ -1624,7 +1721,25 @@
         modalNewPlaylistTitle:"Create Playlist",
         modalNewPlaylistDesc:"Give your playlist a cute name!",
         modalConfirm:"Confirm",
-        modalCancel:"Cancel"
+        modalCancel:"Cancel",
+        userLoginBtn:"👤 Login",
+        tabLoginLabel:"Login",
+        tabRegisterLabel:"Register",
+        modalLoginTitle:"Account Login",
+        modalLoginDesc:"After login, your favorites and playlists will be saved.",
+        modalLoginConfirm:"Login",
+        modalRegisterTitle:"Create Account",
+        modalRegisterDesc:"Register to save your favorites and playlists.",
+        modalRegisterConfirm:"Register",
+        modalUsernamePlaceholder:"Username (2–20 chars)",
+        modalPasswordPlaceholder:"Password (4–40 chars)",
+        toastLoginSuccess:"Login successful. Welcome back!",
+        toastRegisterSuccess:"Registered and logged in!",
+        toastLoginError:"Username or password is incorrect.",
+        toastRegisterError:"Username already exists. Please choose another.",
+        toastLogout:"Logged out.",
+        toastUsernameTooShort:"Username must be at least 2 characters.",
+        toastPasswordTooShort:"Password must be at least 4 characters."
       }
     };
 
@@ -1649,7 +1764,8 @@
       searchInProgress:false,
       noMoreResults:false,
       lyricsAlt:false,
-      muted:false
+      muted:false,
+      currentUser:null
     };
 
     const dom = {};
@@ -1669,8 +1785,171 @@
       return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
     }
 
+    // ===================== 账户管理 =====================
+
+    function simpleHash(str){
+      let h = 0x9e3779b9;
+      for(let i=0;i<str.length;i++){
+        h = Math.imul(31, h) + str.charCodeAt(i) | 0;
+      }
+      return (h >>> 0).toString(16);
+    }
+
+    function getAccounts(){
+      try{return JSON.parse(localStorage.getItem('pikachu-music-accounts')||'[]');}catch(e){return [];}
+    }
+    function setAccounts(accounts){
+      try{localStorage.setItem('pikachu-music-accounts', JSON.stringify(accounts));}catch(e){}
+    }
+
+    function serializeTrack(track){
+      return {
+        uid:track.uid, source:track.source, displayIndex:track.displayIndex,
+        keyword:track.keyword, title:track.title, artist:track.artist, album:track.album,
+        cover:track.cover, lrc:track.lrc, songid:track.songid, songMid:track.songMid,
+        qqId:track.qqId, qqSearchKey:track.qqSearchKey, qqIndex:track.qqIndex,
+        requestNum:track.requestNum,
+        audioUrl:null, lrcUrl:null, detailsLoaded:false,
+        quality:null, qualityLabel:null
+      };
+    }
+
+    function saveUserData(){
+      if(!state.currentUser)return;
+      const data={
+        favorites:state.favorites.map(serializeTrack),
+        playlists:state.playlists.map(pl=>({
+          id:pl.id, name:pl.name,
+          tracks:pl.tracks.map(serializeTrack)
+        }))
+      };
+      try{localStorage.setItem('pikachu-music-userdata-'+state.currentUser, JSON.stringify(data));}catch(e){}
+    }
+
+    function loadUserData(username){
+      try{
+        const raw=localStorage.getItem('pikachu-music-userdata-'+username);
+        if(!raw)return;
+        const data=JSON.parse(raw);
+        if(Array.isArray(data.favorites)){
+          state.favorites=data.favorites.map(tk=>{state.trackMap.set(tk.uid,tk);return tk;});
+        }
+        if(Array.isArray(data.playlists)){
+          state.playlists=data.playlists.map(pl=>({
+            id:pl.id, name:pl.name,
+            tracks:(pl.tracks||[]).map(tk=>{state.trackMap.set(tk.uid,tk);return tk;})
+          }));
+          if(dom.playlistSelect){
+            dom.playlistSelect.innerHTML='';
+            state.playlists.forEach(pl=>{
+              const opt=document.createElement('option');
+              opt.value=pl.id; opt.textContent=pl.name;
+              dom.playlistSelect.appendChild(opt);
+            });
+          }
+        }
+      }catch(e){}
+    }
+
+    function updateUserUI(){
+      if(!dom.loginBtn)return;
+      if(state.currentUser){
+        dom.loginBtn.style.display='none';
+        dom.userDisplay.style.display='flex';
+        dom.userNameLabel.textContent='👤 '+state.currentUser;
+      }else{
+        dom.loginBtn.style.display='';
+        dom.userDisplay.style.display='none';
+      }
+    }
+
+    function loginUser(username, password){
+      const accounts=getAccounts();
+      const hash=simpleHash(password);
+      const acc=accounts.find(a=>a.username===username && a.passwordHash===hash);
+      if(!acc){showToast(t('toastLoginError'));return false;}
+      state.currentUser=username;
+      try{localStorage.setItem('pikachu-music-current-user',username);}catch(e){}
+      loadUserData(username);
+      updateUserUI();
+      renderPlaylistList();
+      updateMainFavButton();
+      showToast(t('toastLoginSuccess'));
+      return true;
+    }
+
+    function registerUser(username, password){
+      const accounts=getAccounts();
+      if(accounts.some(a=>a.username===username)){showToast(t('toastRegisterError'));return false;}
+      const hash=simpleHash(password);
+      accounts.push({username, passwordHash:hash});
+      setAccounts(accounts);
+      state.currentUser=username;
+      try{localStorage.setItem('pikachu-music-current-user',username);}catch(e){}
+      updateUserUI();
+      showToast(t('toastRegisterSuccess'));
+      return true;
+    }
+
+    function logoutUser(){
+      saveUserData();
+      state.currentUser=null;
+      state.favorites=[];
+      state.playlists=[];
+      try{localStorage.removeItem('pikachu-music-current-user');}catch(e){}
+      if(dom.playlistSelect)dom.playlistSelect.innerHTML='';
+      updateUserUI();
+      renderPlaylistList();
+      updateMainFavButton();
+      showToast(t('toastLogout'));
+    }
+
+    // ===================== 登录弹窗 =====================
+
+    let loginTabMode='login';
+
+    function openLoginModal(mode){
+      loginTabMode=mode||'login';
+      dom.loginModal.classList.add('show');
+      dom.loginUsernameInput.value='';
+      dom.loginPasswordInput.value='';
+      updateLoginModalUI();
+      setTimeout(()=>dom.loginUsernameInput.focus(),50);
+    }
+    function closeLoginModal(){
+      dom.loginModal.classList.remove('show');
+    }
+    function updateLoginModalUI(){
+      document.querySelectorAll('.login-tab').forEach(btn=>{
+        btn.classList.toggle('active',btn.dataset.loginTab===loginTabMode);
+      });
+      if(loginTabMode==='login'){
+        dom.loginModalTitle.textContent=t('modalLoginTitle');
+        dom.loginModalDesc.textContent=t('modalLoginDesc');
+        dom.loginConfirmBtn.textContent=t('modalLoginConfirm');
+        dom.loginUsernameInput.placeholder=t('modalUsernamePlaceholder');
+        dom.loginPasswordInput.placeholder=t('modalPasswordPlaceholder');
+      }else{
+        dom.loginModalTitle.textContent=t('modalRegisterTitle');
+        dom.loginModalDesc.textContent=t('modalRegisterDesc');
+        dom.loginConfirmBtn.textContent=t('modalRegisterConfirm');
+        dom.loginUsernameInput.placeholder=t('modalUsernamePlaceholder');
+        dom.loginPasswordInput.placeholder=t('modalPasswordPlaceholder');
+      }
+    }
+    function handleLoginConfirm(){
+      const username=dom.loginUsernameInput.value.trim();
+      const password=dom.loginPasswordInput.value;
+      if(username.length<2){showToast(t('toastUsernameTooShort'));return;}
+      if(password.length<4){showToast(t('toastPasswordTooShort'));return;}
+      if(loginTabMode==='login'){
+        if(loginUser(username,password))closeLoginModal();
+      }else{
+        if(registerUser(username,password))closeLoginModal();
+      }
+    }
+
     function getInterleavedSearchList(){
-      const grouped={migu:[],netease:[],qq:[],kuwo:[]};
       state.searchResults.forEach(t=>{if(grouped[t.source])grouped[t.source].push(t);});
       Object.keys(grouped).forEach(k=>grouped[k].sort((a,b)=>(a.displayIndex||0)-(b.displayIndex||0)));
       const order=['migu','netease','qq','kuwo'];
@@ -1704,6 +1983,8 @@
       dom.playlistNameInput.placeholder = lang==='zh'
         ? '例如：通勤歌单 / 宝可梦歌单'
         : 'e.g. Commute mix / Pokemon list';
+      if(dom.loginModal && dom.loginModal.classList.contains('show')) updateLoginModalUI();
+      else if(dom.loginModalDesc) updateLoginModalUI();
       updatePlaylistInfoLabel();
     }
 
@@ -2403,6 +2684,7 @@
       const i=state.favorites.findIndex(x=>x.uid===tr.uid);
       if(i>=0){state.favorites.splice(i,1);showToast(t('toastRemovedFavorite'));}
       else{state.favorites.push(tr);showToast(t('toastAddedFavorite'));}
+      saveUserData();
       updateMainFavButton();
       renderPlaylistList();
     }
@@ -2425,6 +2707,7 @@
         return;
       }
       pl.tracks.push(track);
+      saveUserData();
       renderPlaylistList();
       showToast(t('toastAddedToPlaylist'));
     }
@@ -2565,6 +2848,7 @@
           const i=state.favorites.findIndex(x=>x.uid===track.uid);
           if(i>=0){state.favorites.splice(i,1);showToast(t('toastRemovedFavorite'));}
           else{state.favorites.push(track);showToast(t('toastAddedFavorite'));}
+          saveUserData();
           renderPlaylistList();
           updateMainFavButton();
         });
@@ -2602,6 +2886,7 @@
       dom.playlistSelect.appendChild(opt);
       dom.playlistSelect.value=pl.id;
       closePlaylistModal();
+      saveUserData();
       renderPlaylistList();
       showToast(t('toastPlaylistCreated'));
     }
@@ -2767,6 +3052,19 @@
       dom.shortcutToggleBtn=$('shortcut-toggle-btn');
       dom.shortcutModal=$('shortcut-modal');
       dom.shortcutCloseBtn=$('shortcut-close');
+
+      dom.loginBtn=$('login-btn');
+      dom.userDisplay=$('user-display');
+      dom.userNameLabel=$('user-name-label');
+      dom.logoutBtn=$('logout-btn');
+      dom.loginModal=$('login-modal');
+      dom.loginModalTitle=$('login-modal-title');
+      dom.loginModalDesc=$('login-modal-desc');
+      dom.loginUsernameInput=$('login-username');
+      dom.loginPasswordInput=$('login-password');
+      dom.loginConfirmBtn=$('login-confirm-btn');
+      dom.loginCancelBtn=$('login-cancel-btn');
+      dom.loginCloseBtn=$('login-close');
     }
 
     function setPlaymodeUI(){
@@ -2912,6 +3210,21 @@
       dom.shortcutCloseBtn.addEventListener('click',()=>{dom.shortcutModal.classList.remove('show');});
       dom.shortcutModal.addEventListener('click',e=>{if(e.target===dom.shortcutModal)dom.shortcutModal.classList.remove('show');});
 
+      dom.loginBtn.addEventListener('click',()=>openLoginModal('login'));
+      dom.logoutBtn.addEventListener('click',logoutUser);
+      dom.loginConfirmBtn.addEventListener('click',handleLoginConfirm);
+      dom.loginCancelBtn.addEventListener('click',closeLoginModal);
+      dom.loginCloseBtn.addEventListener('click',closeLoginModal);
+      dom.loginModal.addEventListener('click',e=>{if(e.target===dom.loginModal)closeLoginModal();});
+      document.querySelectorAll('.login-tab').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          loginTabMode=btn.dataset.loginTab;
+          updateLoginModalUI();
+        });
+      });
+      dom.loginUsernameInput.addEventListener('keydown',e=>{if(e.key==='Enter')dom.loginPasswordInput.focus();});
+      dom.loginPasswordInput.addEventListener('keydown',e=>{if(e.key==='Enter')handleLoginConfirm();});
+
       document.querySelectorAll('.playmode-btn').forEach(btn=>{
         btn.addEventListener('click',()=>{
           state.playMode=btn.dataset.mode;
@@ -2927,14 +3240,16 @@
         const typing=(tag==='input'||tag==='textarea');
         const playlistOpen=dom.playlistModal.classList.contains('show');
         const shortcutOpen=dom.shortcutModal.classList.contains('show');
+        const loginOpen=dom.loginModal.classList.contains('show');
 
         if(e.key==='Escape'){
           if(playlistOpen)closePlaylistModal();
           if(shortcutOpen)dom.shortcutModal.classList.remove('show');
+          if(loginOpen)closeLoginModal();
           return;
         }
 
-        if(playlistOpen || shortcutOpen){
+        if(playlistOpen || shortcutOpen || loginOpen){
           return;
         }
 
@@ -2964,11 +3279,24 @@
     function init(){
       setupDOM();
       try{const lg=localStorage.getItem('pikachu-music-lang'); if(lg)state.language=lg;}catch(e){}
+      try{
+        const savedUser=localStorage.getItem('pikachu-music-current-user');
+        if(savedUser){
+          const accounts=getAccounts();
+          if(accounts.some(a=>a.username===savedUser)){
+            state.currentUser=savedUser;
+            loadUserData(savedUser);
+          }else{
+            localStorage.removeItem('pikachu-music-current-user');
+          }
+        }
+      }catch(e){}
       setupParticles();
       setupRipple();
       setupEvents();
       setLanguage(state.language);
       setPlaymodeUI();
+      updateUserUI();
       dom.audio.volume=parseFloat(dom.volumeSlider.value);
     }
 
